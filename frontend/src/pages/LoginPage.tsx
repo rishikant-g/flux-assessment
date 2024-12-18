@@ -1,8 +1,16 @@
 import { Button, Col, Form, Row } from "react-bootstrap";
 import { Controller, FormProvider, useForm } from "react-hook-form";
 import { CONSTANTS } from "../common/constants/constants";
+import { useLogin } from "../common/services/useAuth";
+import { useEffect } from "react";
+import Loader from "../components/common/Loader";
+import { URLS } from "../common/constants/urls";
+import { useNavigate } from "react-router-dom";
+import { setToken } from "../common/utils/util";
 
 const Login = () => {
+  const { mutate, data, isPending } = useLogin(URLS.LOGIN);
+  const navigate = useNavigate();
   const methods = useForm({
     mode: "onBlur",
     defaultValues: {
@@ -19,12 +27,19 @@ const Login = () => {
   } = methods;
 
   const onSubmit = (data: any) => {
-    console.log(data);
+    mutate(data);
   };
+
+  useEffect(() => {
+    if (data?.token) {
+      setToken(data.token);
+      navigate("/task");
+    }
+  }, [data, navigate]);
 
   return (
     <>
-      {/* {isPending && <Loader />} */}
+      {isPending && <Loader />}
       <div className="container">
         <div className="page-title">
           <h1>
@@ -85,19 +100,6 @@ const Login = () => {
                       required: {
                         value: true,
                         message: "This field is required",
-                      },
-                      minLength: {
-                        value: 6,
-                        message: "Mininum length of password is 6 character",
-                      },
-                      maxLength: {
-                        value: 50,
-                        message: "Maximum length of password is 50 character",
-                      },
-                      pattern: {
-                        value: CONSTANTS.PASSWORD_VALIDATION_REGEX,
-                        message:
-                          "Password must have one uppercase , a lowercase and a special character",
                       },
                     }}
                     render={({ field: { value, onChange, onBlur } }) => (

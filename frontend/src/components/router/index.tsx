@@ -7,16 +7,17 @@ import Page from "../router/Page";
 import Loader from "../common/Loader";
 import PrivateLayout from "../layout/PrivateLayout";
 import { ToastContainer } from "react-toastify";
+import { getToken } from "../../common/utils/util";
 
 const PublicLayout = lazy(() => import("../layout/PublicLayout"));
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  // const { isLoggedIn, cidnData } = useContext(AuthContext);
-  // if (!isLoggedIn || !cidnData?.cidn) {
-  //   return <Navigate to="/login" replace />;
-  // }
+  const token = getToken();
+  if (!token) {
+    return <Navigate to="/" replace />;
+  }
   return <>{children}</>;
 };
 

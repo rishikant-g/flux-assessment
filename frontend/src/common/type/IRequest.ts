@@ -16,6 +16,7 @@ export interface IRequest<T> {
   isFormData?: boolean;
   isEncryption?: boolean;
   credentialsConfig?: boolean;
+  isAttachToken: boolean;
 }
 
 export type ApiServiceErr = DefaultError;

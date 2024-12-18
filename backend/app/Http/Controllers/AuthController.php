@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
@@ -29,6 +30,7 @@ class AuthController extends Controller
         // If validation fails, return errors
         if ($validator->fails()) {
             return response()->json([
+                'success' => false,
                 'errors' => $validator->errors(),
             ], 422); // 422 Unprocessable Entity
         }
@@ -46,9 +48,52 @@ class AuthController extends Controller
 
         // Return a successful response with the token
         return response()->json([
+            'success' => true,
             'message' => 'User registered successfully',
             'user' => $user,
             'token' => $token,
         ], 201);
+    }
+
+    public function login(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required',
+            'password' => 'required',
+        ]);
+
+        // If validation fails, return errors
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors(),
+            ], 422); // 422 Unprocessable Entity
+        }
+
+        $user = User::where('email', $request->email)->first();
+
+        if (! $user || ! Hash::check($request->password, $user->password)) {
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid credential',
+
+            ], 201);
+        }
+
+        return response()->json(['success' => true, 'token' => $user->createToken($request->email)->plainTextToken]);
+    }
+
+    public function logout(Request $request){
+        
+        // $request->$user->tokens()->where('id', $tokenId)->delete();
+        // $request->user()?->delete();
+        $request->user()?->currentAccessToken()->delete();
+        return response()->json(['status' => true, 'message' => 'Logged out successfully']);
+    }
+
+    public function user(Request $request)
+    {
+        return $request->user();
     }
 }
