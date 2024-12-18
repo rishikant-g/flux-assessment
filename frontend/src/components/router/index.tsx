@@ -7,15 +7,15 @@ import Page from "../router/Page";
 import Loader from "../common/Loader";
 import PrivateLayout from "../layout/PrivateLayout";
 import { ToastContainer } from "react-toastify";
-import { getToken } from "../../common/utils/util";
+import { useAuth } from "../../provider/authProvider";
 
 const PublicLayout = lazy(() => import("../layout/PublicLayout"));
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const token = getToken();
-  if (!token) {
+  const { isLoggedIn } = useAuth();
+  if (!isLoggedIn) {
     return <Navigate to="/" replace />;
   }
   return <>{children}</>;

@@ -6,11 +6,13 @@ import { useEffect } from "react";
 import Loader from "../components/common/Loader";
 import { URLS } from "../common/constants/urls";
 import { useNavigate } from "react-router-dom";
-import { setToken } from "../common/utils/util";
+import { useAuth } from "../provider/authProvider";
 
 const Login = () => {
-  const { mutate, data, isPending } = useLogin(URLS.LOGIN);
+  const authCtx = useAuth();
   const navigate = useNavigate();
+
+  const { mutate, data, isPending } = useLogin(URLS.LOGIN);
   const methods = useForm({
     mode: "onBlur",
     defaultValues: {
@@ -32,10 +34,14 @@ const Login = () => {
 
   useEffect(() => {
     if (data?.token) {
-      setToken(data.token);
-      navigate("/task");
+      authCtx.login(data.token);
+      // navigate("/task");
     }
-  }, [data, navigate]);
+  }, [data, navigate, authCtx, isPending]);
+
+  useEffect(() => {
+    if (authCtx.isLoggedIn) navigate("/task");
+  }, [authCtx.isLoggedIn, navigate]);
 
   return (
     <>
@@ -47,7 +53,7 @@ const Login = () => {
             <br />
             ToDo account.
           </h1>
-          <p className="mt-10">Manage your tasks.</p>
+          {/* <p className="mt-10">Manage your tasks.</p> */}
         </div>
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)}>

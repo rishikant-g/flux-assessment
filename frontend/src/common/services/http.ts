@@ -10,7 +10,6 @@ export const axiosInstance = axios.create({
     "Access-Control-Allow-Methods": " GET, POST, PATCH, PUT, DELETE, OPTIONS",
     "Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token",
     "Content-Type": "application/json",
-    "x-isAdmin": "false",
     Accept: "application/json",
   },
 });
@@ -18,7 +17,6 @@ export const axiosInstance = axios.create({
 /** Add a request interceptor */
 axiosInstance.interceptors.request.use(
   function (config) {
-    console.log("config>>>", config);
     // Do something before request is sent
     const token = getToken();
     if (
@@ -62,7 +60,9 @@ const handleGlobalError = (response: any, errorFrom: string) => {
 
     const errorObject = response.data;
     try {
-      if (
+      if (errorObject && errorObject.message) {
+        Toast(`${errorObject.message}`, "error");
+      } else if (
         errorObject &&
         typeof errorObject === "object" &&
         errorObject.errors
@@ -135,7 +135,6 @@ export async function request<T, R>({
   useData = false,
   isFormData = false,
   credentialsConfig = true,
-  isAttachToken = false,
 }: IRequest<T>): Promise<R | any> {
   try {
     let requestDataOrParams;
@@ -165,9 +164,6 @@ export async function request<T, R>({
       config.headers = headerConfig;
     }
 
-    if (isAttachToken) {
-      config.headers.authorization = "ab";
-    }
     if (!credentialsConfig) {
       config.withCredentials = credentialsConfig;
     }

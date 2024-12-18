@@ -4,13 +4,13 @@ const NotFoundPage = lazy(() => import("../../components/router/NotFound"));
 const LoginPage = lazy(() => import("../../pages/LoginPage"));
 const RegisterPage = lazy(() => import("../../pages/RegisterPage"));
 const TaskPage = lazy(() => import("../../pages/TaskPage"));
-console.log("SYSTEM_CONSTANTS", SYSTEM_CONSTANTS);
+
 export const PUBLIC_ROUTES = [
   {
     path: "/",
     exact: true,
     component: LoginPage,
-    title: "Sign Up | " + SYSTEM_CONSTANTS.APP_NAME,
+    title: "Login In | " + SYSTEM_CONSTANTS.APP_NAME,
   },
   {
     path: "/register",

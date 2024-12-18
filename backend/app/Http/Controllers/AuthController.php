@@ -78,14 +78,15 @@ class AuthController extends Controller
                 'success' => false,
                 'message' => 'Invalid credential',
 
-            ], 201);
+            ], 401);
         }
 
         return response()->json(['success' => true, 'token' => $user->createToken($request->email)->plainTextToken]);
     }
 
-    public function logout(Request $request){
-        
+    public function logout(Request $request)
+    {
+
         // $request->$user->tokens()->where('id', $tokenId)->delete();
         // $request->user()?->delete();
         $request->user()?->currentAccessToken()->delete();

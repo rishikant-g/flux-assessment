@@ -5,9 +5,14 @@ import { useSingUp } from "../common/services/useAuth";
 import { URLS } from "../common/constants/urls";
 import Loader from "../components/common/Loader";
 import { useEffect } from "react";
+import { useAuth } from "../provider/authProvider";
+import { useNavigate } from "react-router-dom";
 
 const Register = () => {
-  const { mutate, data, isPending } = useSingUp(URLS.REGISTER);
+  // const authCtx = useAuth();
+  const navigate = useNavigate();
+
+  const { mutate, isPending, isSuccess, data } = useSingUp(URLS.REGISTER);
 
   const methods = useForm({
     mode: "onBlur",
@@ -30,8 +35,13 @@ const Register = () => {
   };
 
   useEffect(() => {
-    console.log(data);
-  }, [data]);
+    console.log("data", data, isSuccess);
+    if (data && isSuccess) navigate("/");
+  }, [isSuccess, navigate, data]);
+
+  // useEffect(() => {
+  //   if (authCtx.isLoggedIn) navigate("/task");
+  // }, [authCtx, navigate]);
 
   return (
     <>
