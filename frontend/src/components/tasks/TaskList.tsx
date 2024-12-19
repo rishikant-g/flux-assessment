@@ -94,7 +94,13 @@ const TaskList: React.FC = () => {
       <div>
         {state?.taskData?.map((task: ITaskListResponse) => (
           <Row xs={1} sm={6} md={6} lg={6}>
-            <Col key={task.id}>
+            <Col
+              key={task.id}
+              style={{
+                backgroundColor:
+                  state?.selectedTaskList?.id === task.id ? "lightyellow" : "",
+              }}
+            >
               <Card className="d-flex">
                 <Card.Body>
                   <Card.Text

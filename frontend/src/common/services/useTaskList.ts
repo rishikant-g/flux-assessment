@@ -4,7 +4,16 @@ import { IEmpty } from "../type/IEmpty";
 import ITaskListResponse from "../type/model/ITaskListResponse";
 import { MutationOpt } from "../type/IRequest";
 
-export const useGetTaskList = (url: string, searchString = "") => {
+export const useGetTaskList = (
+  url: string,
+  searchString = "",
+  sort_by = "asc",
+) => {
+  if (searchString) {
+    url = url + `?search=${searchString}&sort_by=${sort_by}`;
+  } else if (sort_by) {
+    url = url + `?sort_by=${sort_by}`;
+  }
   const fn = () =>
     request<IEmpty, ITaskListResponse>({
       url,
@@ -13,7 +22,7 @@ export const useGetTaskList = (url: string, searchString = "") => {
     });
 
   return useQuery({
-    queryKey: ["GET_TASK_LIST", searchString],
+    queryKey: ["GET_TASK_LIST", searchString, sort_by],
     queryFn: fn,
   });
 };

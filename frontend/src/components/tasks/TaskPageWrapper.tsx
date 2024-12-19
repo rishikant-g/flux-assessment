@@ -1,4 +1,4 @@
-import { Col, Container, Form, Row } from "react-bootstrap";
+import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import { useTaskData } from "../../provider/taskProvider";
 import TaskList from "./TaskList";
 import Task from "./Task";
@@ -10,12 +10,13 @@ import { URLS } from "../../common/constants/urls";
 const TaskPageWrapper: React.FC = () => {
   const { state, dispatch } = useTaskData();
   const [searchQuery, setSearchQuery] = useState("");
+  const [sortBy, setsortBy] = useState<string>("asc");
 
   const {
     data,
     isLoading,
     isSuccess: isSuccessTaskList,
-  } = useGetTaskList(URLS.TASK_LIST + `?search=${searchQuery}`, searchQuery);
+  } = useGetTaskList(URLS.TASK_LIST, searchQuery, sortBy);
 
   const debouncedSearch = useCallback(
     debounce((query: string) => {
@@ -34,6 +35,7 @@ const TaskPageWrapper: React.FC = () => {
         type: "UPDATE_FIELDS",
         payload: {
           taskData: data,
+          isOpenSubTask: false,
         },
       });
     }
@@ -50,6 +52,17 @@ const TaskPageWrapper: React.FC = () => {
             />
           </Form.Group>
         </Form>
+        <Button
+          onClick={() => {
+            if (sortBy === "asc") {
+              setsortBy("desc");
+            } else {
+              setsortBy("asc");
+            }
+          }}
+        >
+          {sortBy === "asc" ? "DESC" : "ASC"}
+        </Button>
         <Col>
           <div className="task-list">
             <TaskList />
