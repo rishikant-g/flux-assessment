@@ -6,7 +6,14 @@ function Fallback() {
   return (
     <>
       <p className="text-center">We are sorry about this, please try again.</p>
-      <button onClick={() => navigate("/")}>Go back</button>
+      <button
+        onClick={() => {
+          navigate("/");
+          window.location.reload();
+        }}
+      >
+        Go back
+      </button>
     </>
   );
 }

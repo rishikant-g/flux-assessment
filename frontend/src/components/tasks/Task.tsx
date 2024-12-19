@@ -120,54 +120,59 @@ const Task: React.FC = () => {
           selectedTask={selectedTask}
         />
       )}
+      {state.isOpenSubTask && (
+        <>
+          <div className="task-div">
+            {data?.data?.map((task: any) => (
+              <Row
+                xs={1}
+                sm={2}
+                md={3}
+                lg={4}
+                className="g-4 d-flex justify-content-start"
+              >
+                <Col key={task.id}>
+                  <Card>
+                    <Card.Body>
+                      <Form>
+                        <Form.Check
+                          type="checkbox"
+                          id="checkbox-1"
+                          checked={task.is_completed ? true : false}
+                          onChange={(e: any) =>
+                            handleCheckboxChange(e, task.id)
+                          }
+                        />
+                      </Form>
 
-      <div className="task-div">
-        {data?.data?.map((task: any) => (
-          <Row
-            xs={1}
-            sm={2}
-            md={3}
-            lg={4}
-            className="g-4 d-flex justify-content-start"
-          >
-            <Col key={task.id}>
-              <Card>
-                <Card.Body>
-                  <Form>
-                    <Form.Check
-                      type="checkbox"
-                      id="checkbox-1"
-                      checked={task.is_completed ? true : false}
-                      onChange={(e: any) => handleCheckboxChange(e, task.id)}
-                    />
-                  </Form>
-
-                  <Card.Text
-                    onClick={() =>
-                      dispatch({
-                        type: "UPDATE_FIELDS",
-                        payload: {
-                          selectedTask: task,
-                        },
-                      })
-                    }
-                  >
-                    {task.description}
-                  </Card.Text>
-                  <p className="p-0" onClick={() => handleEdit(task)}>
-                    edit
-                  </p>
-                  <p className="p-0" onClick={() => handleDelete(task.id)}>
-                    Delete
-                  </p>
-                  <p></p>
-                </Card.Body>
-              </Card>
-            </Col>
-          </Row>
-        ))}
-      </div>
-      <Button onClick={handleShow}>Add New Task</Button>
+                      <Card.Text
+                        onClick={() =>
+                          dispatch({
+                            type: "UPDATE_FIELDS",
+                            payload: {
+                              selectedTask: task,
+                            },
+                          })
+                        }
+                      >
+                        {task.description}
+                      </Card.Text>
+                      <p className="p-0" onClick={() => handleEdit(task)}>
+                        edit
+                      </p>
+                      <p className="p-0" onClick={() => handleDelete(task.id)}>
+                        Delete
+                      </p>
+                      <p></p>
+                    </Card.Body>
+                  </Card>
+                </Col>
+              </Row>
+            ))}
+          </div>
+          <Button onClick={handleShow}>Add New Task</Button>
+        </>
+      )}
     </>
   );
 };

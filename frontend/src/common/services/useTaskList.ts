@@ -4,7 +4,7 @@ import { IEmpty } from "../type/IEmpty";
 import ITaskListResponse from "../type/model/ITaskListResponse";
 import { MutationOpt } from "../type/IRequest";
 
-export const useGetTaskList = (url: string) => {
+export const useGetTaskList = (url: string, searchString = "") => {
   const fn = () =>
     request<IEmpty, ITaskListResponse>({
       url,
@@ -13,7 +13,7 @@ export const useGetTaskList = (url: string) => {
     });
 
   return useQuery({
-    queryKey: ["GET_TASK_LIST"],
+    queryKey: ["GET_TASK_LIST", searchString],
     queryFn: fn,
   });
 };

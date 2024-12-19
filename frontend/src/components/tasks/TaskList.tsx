@@ -48,6 +48,17 @@ const TaskList: React.FC = () => {
 
   useEffect(() => {
     if (isSuccess) {
+      console.log("here>>>", state?.selectedTask?.id, deleteId);
+      if (state?.selectedTaskList?.id === deleteId) {
+        dispatch({
+          type: "UPDATE_FIELDS",
+          payload: {
+            selectedTaskList: {},
+            isOpenSubTask: false,
+          },
+        });
+      }
+
       queryClient.invalidateQueries({ queryKey: ["GET_TASK_LIST"] });
       queryClient.invalidateQueries({ queryKey: ["GET_TASK"] });
     }
