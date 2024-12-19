@@ -7,6 +7,7 @@ import { URLS } from "../../common/constants/urls";
 import { useUpdateTaskList } from "../../common/services/useTaskList";
 import { queryClient } from "../../common/services/queryClient";
 import { useTaskData } from "../../provider/taskProvider";
+import { getUpdatedTaskData } from "../../common/utils/util";
 
 // Define the props for the TaskModal
 interface TaskModalProps {
@@ -24,7 +25,7 @@ const TaskModal: React.FC<TaskModalProps> = ({
   isEdit = false,
   selectedTask,
 }) => {
-  const { state } = useTaskData();
+  const { state, dispatch } = useTaskData();
 
   const [taksTitle, setTaskTitle] = useState<string>(
     selectedTask?.description || "",
@@ -54,6 +55,29 @@ const TaskModal: React.FC<TaskModalProps> = ({
     }
   }, [isSuccess, isTaskUpdate]);
 
+  useEffect(() => {
+    if (isSuccess) {
+      const updatedTaskList = getUpdatedTaskData(
+        state?.taskData,
+        state?.selectedTaskList,
+        "ADD",
+      );
+      dispatch({
+        type: "UPDATE_FIELDS",
+        payload: {
+          taskData: updatedTaskList,
+        },
+      });
+    }
+  }, [isSuccess]);
+
+  // Prevent form submission on enter key press
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key === "Enter") {
+      event.preventDefault(); // Prevents form submission
+    }
+  };
+
   return (
     <Modal show={show} onHide={onHide}>
       <Modal.Header closeButton>
@@ -66,6 +90,7 @@ const TaskModal: React.FC<TaskModalProps> = ({
               type="text"
               onChange={(e) => setTaskTitle(e.target.value)}
               value={taksTitle}
+              onKeyDown={handleKeyDown}
             />
           </Form.Group>
         </Form>
@@ -78,6 +103,7 @@ const TaskModal: React.FC<TaskModalProps> = ({
           variant="primary"
           onClick={handleCreateTask}
           disabled={!taksTitle}
+          type="button"
         >
           {isEdit ? "Update" : "Save"}
         </Button>

@@ -9,3 +9,28 @@ export const getToken = () => {
 export const removeToken = () => {
   localStorage.removeItem("token");
 };
+
+export const getUpdatedTaskData = (
+  taskData: any,
+  selectedTaskList: any,
+  actionType: string,
+) => {
+  const arr: any = [];
+  taskData?.forEach((d: any) => {
+    if (d.id === selectedTaskList?.id) {
+      if (actionType === "ADD") {
+        d.items_count = d.items_count + 1;
+      } else if (actionType == "DELETE") {
+        d.items_count = d.items_count - 1;
+      } else if (actionType == "COMPLETED") {
+        d.checked_items = d.checked_items + 1;
+      } else if (actionType == "UNCOMPLETED") {
+        d.checked_items = d.checked_items - 1;
+      }
+      arr.push(d);
+    } else {
+      arr.push(d);
+    }
+  });
+  return arr;
+};

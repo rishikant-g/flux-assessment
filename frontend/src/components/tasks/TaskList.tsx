@@ -1,4 +1,4 @@
-import { Button, Card, Col, Row } from "react-bootstrap";
+import { Button, Card, Col, Container, Row } from "react-bootstrap";
 import {
   useDeleteTaskList,
   useGetTaskList,
@@ -9,15 +9,21 @@ import Loader from "../common/Loader";
 import { useEffect, useState } from "react";
 import TaskListModal from "./TaskListModal";
 import { queryClient } from "../../common/services/queryClient";
+import ITaskListResponse from "../../common/type/model/ITaskListResponse";
 
 const TaskList: React.FC = () => {
-  const { dispatch } = useTaskData();
+  const { state, dispatch } = useTaskData();
   const [selectedTaskList, setSelectedTaskList] = useState({} as any);
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [showModal, setShowModal] = useState(false);
   const [deleteId, setDeleteId] = useState<number>();
 
-  const { data, isLoading } = useGetTaskList(URLS.TASK_LIST);
+  const {
+    data,
+    isLoading,
+    isFetching,
+    isSuccess: isSuccessTaskList,
+  } = useGetTaskList(URLS.TASK_LIST);
   const { mutate, isSuccess } = useDeleteTaskList(
     URLS.TASK_DELETE + `${deleteId}`,
   );
@@ -43,11 +49,25 @@ const TaskList: React.FC = () => {
   useEffect(() => {
     if (isSuccess) {
       queryClient.invalidateQueries({ queryKey: ["GET_TASK_LIST"] });
+      queryClient.invalidateQueries({ queryKey: ["GET_TASK"] });
     }
   }, [isSuccess]);
 
+  useEffect(() => {
+    if (data) {
+      dispatch({
+        type: "UPDATE_FIELDS",
+        payload: {
+          taskData: data,
+        },
+      });
+    }
+  }, [isLoading, isFetching, isSuccessTaskList]);
+
+  console.log("state?.taskData", state?.taskData);
+
   return (
-    <>
+    <Container className="mt-2 ">
       {isLoading && <Loader />}
       {showModal && (
         <TaskListModal
@@ -59,11 +79,12 @@ const TaskList: React.FC = () => {
         />
       )}
 
-      <div className="task-list">
-        {data?.map((task: any) => (
-          <Row xs={1} sm={2} md={3} lg={4} className="g-4">
+      {/* <div className="task-list"> */}
+      <div>
+        {state?.taskData?.map((task: ITaskListResponse) => (
+          <Row xs={1} sm={6} md={6} lg={6}>
             <Col key={task.id}>
-              <Card className={task.isCompleted ? "bg-success text-white" : ""}>
+              <Card className="d-flex">
                 <Card.Body>
                   <Card.Text
                     onClick={() =>
@@ -76,12 +97,14 @@ const TaskList: React.FC = () => {
                       })
                     }
                   >
+                    {task.checked_items} / {task.items_count}
+                    <br />
                     {task.title}
                   </Card.Text>
                   <p className="p-0" onClick={() => handleEdit(task)}>
                     edit
                   </p>
-                  <p className="p-0" onClick={() => handleDelete(task.id)}>
+                  <p className="p-0" onClick={() => handleDelete(task.id || 0)}>
                     delete
                   </p>
                 </Card.Body>
@@ -91,7 +114,7 @@ const TaskList: React.FC = () => {
         ))}
       </div>
       <Button onClick={handleShow}>New List </Button>
-    </>
+    </Container>
   );
 };
 

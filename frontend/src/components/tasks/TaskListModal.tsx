@@ -50,6 +50,13 @@ const TaskListModal: React.FC<TaskListModalProps> = ({
     }
   }, [isSuccess, isTaskUpdate]);
 
+  // Prevent form submission on enter key press
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key === "Enter") {
+      event.preventDefault(); // Prevents form submission
+    }
+  };
+
   return (
     <Modal show={show} onHide={onHide}>
       <Modal.Header closeButton>
@@ -62,18 +69,20 @@ const TaskListModal: React.FC<TaskListModalProps> = ({
               type="text"
               onChange={(e) => setTaskTitle(e.target.value)}
               value={taksTitle}
+              onKeyDown={handleKeyDown}
             />
           </Form.Group>
         </Form>
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary" onClick={onHide}>
+        <Button variant="secondary" onClick={onHide} type="button">
           Close
         </Button>
         <Button
           variant="primary"
           onClick={handleCreateTask}
           disabled={!taksTitle}
+          type="button"
         >
           {isEdit ? "Update" : "Save"}
         </Button>

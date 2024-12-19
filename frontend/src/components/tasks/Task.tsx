@@ -2,7 +2,6 @@ import { Button, Card, Col, Form, Row } from "react-bootstrap";
 import { URLS } from "../../common/constants/urls";
 import { useGetTask } from "../../common/services/useTask";
 import { useTaskData } from "../../provider/taskProvider";
-import Loader from "../common/Loader";
 import TaskModal from "./TaskModal";
 import { useEffect, useState } from "react";
 import {
@@ -11,14 +10,16 @@ import {
 } from "../../common/services/useTaskList";
 import { queryClient } from "../../common/services/queryClient";
 import LoaderPortal from "../common/LoaderPortal";
+import { getUpdatedTaskData } from "../../common/utils/util";
 
-const Task: React.FC<TASK> = () => {
+const Task: React.FC = () => {
   const { state, dispatch } = useTaskData();
   const [selectedTask, setSelectedTask] = useState({} as any);
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [showModal, setShowModal] = useState(false);
   const [deleteId, setDeleteId] = useState<number>();
   const [updateId, setUpdateId] = useState<number>();
+  const [markIsCompleted, setMarkIsCompleted] = useState(false);
 
   const { data, isLoading } = useGetTask(
     URLS.TASK_ITEMS + `/${state?.selectedTaskList?.id}`,
@@ -59,6 +60,7 @@ const Task: React.FC<TASK> = () => {
   ) => {
     setUpdateId(id);
     const isChecked = event.target.checked;
+    setMarkIsCompleted(isChecked);
     if (isChecked) {
       mutateUpdate({ task_id: id, is_completed: true });
     } else {
@@ -72,11 +74,41 @@ const Task: React.FC<TASK> = () => {
     }
   }, [isDeleteSuccess, isTaskUpdate]);
 
-  console.log("ispending", isPending);
+  useEffect(() => {
+    if (isTaskUpdate) {
+      const updatedTaskList = getUpdatedTaskData(
+        state?.taskData,
+        state?.selectedTaskList,
+        markIsCompleted ? "COMPLETED" : "UNCOMPLETED",
+      );
+      dispatch({
+        type: "UPDATE_FIELDS",
+        payload: {
+          taskData: updatedTaskList,
+        },
+      });
+    }
+  }, [isTaskUpdate]);
+
+  useEffect(() => {
+    if (isDeleteSuccess) {
+      const updatedTaskList = getUpdatedTaskData(
+        state?.taskData,
+        state?.selectedTaskList,
+        "DELETE",
+      );
+      dispatch({
+        type: "UPDATE_FIELDS",
+        payload: {
+          taskData: updatedTaskList,
+        },
+      });
+    }
+  }, [isDeleteSuccess]);
+
   return (
     <>
-      {/* {(isLoading || isPending) && <LoaderPortal />} */}
-      <LoaderPortal />
+      {(isLoading || isPending) && <LoaderPortal />}
       {showModal && (
         <TaskModal
           show={showModal}
