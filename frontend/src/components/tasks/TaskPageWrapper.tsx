@@ -39,7 +39,7 @@ const TaskPageWrapper: React.FC = () => {
         },
       });
     }
-  }, [isLoading, isSuccessTaskList]);
+  }, [isLoading, isSuccessTaskList, data]);
 
   return (
     <Container>
