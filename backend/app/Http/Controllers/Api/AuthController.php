@@ -1,14 +1,15 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\ApiController;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
-class AuthController extends Controller
+class AuthController extends ApiController
 {
     public function register(Request $request)
     {
@@ -29,30 +30,27 @@ class AuthController extends Controller
 
         // If validation fails, return errors
         if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'errors' => $validator->errors(),
-            ], 422); // 422 Unprocessable Entity
+            return $this->jsonError("Validation Error", $validator->errors(), 422);
         }
 
         $userValidated = $validator->validate();
 
-        // Create the new user
-        $user = User::create([
-            'name' => $userValidated['name'],
-            'email' => $userValidated['email'],
-            'password' => Hash::make($userValidated['password']), // Hash the password
-        ]);
+        try {
 
-        $token = $user->createToken('FLUX')->plainTextToken;
+            // Create the new user
+            $user = User::create([
+                'name' => $userValidated['name'],
+                'email' => $userValidated['email'],
+                'password' => Hash::make($userValidated['password']), // Hash the password
+            ]);
+            
+            $token = $user?->createToken('FLUX')->plainTextToken;
+        } catch(\Exception $e) {
+            return $this->jsonError("Failed to create User", ['SQL_ERROR' => $e->getMessage()], 400);
+        }
 
         // Return a successful response with the token
-        return response()->json([
-            'success' => true,
-            'message' => 'User registered successfully',
-            'user' => $user,
-            'token' => $token,
-        ], 201);
+        return $this->jsonSuccess("User registered succesfully", ['token' => $token], 201);
     }
 
     public function login(Request $request)
@@ -64,37 +62,24 @@ class AuthController extends Controller
 
         // If validation fails, return errors
         if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'errors' => $validator->errors(),
-            ], 422); // 422 Unprocessable Entity
+            return $this->jsonError("Validation Error", $validator->errors(), 422);
         }
 
         $user = User::where('email', $request->email)->first();
 
         if (! $user || ! Hash::check($request->password, $user->password)) {
-
-            return response()->json([
-                'success' => false,
-                'message' => 'Invalid credential',
-
-            ], 401);
+            return $this->jsonError("Invalid credential", [], 401);
         }
 
-        return response()->json(['success' => true, 'token' => $user->createToken($request->email)->plainTextToken]);
+        $token = $user->createToken($request->email)->plainTextToken;
+        return $this->jsonSuccess('', ['token' => $token], 200);
     }
 
     public function logout(Request $request)
     {
-
-        // $request->$user->tokens()->where('id', $tokenId)->delete();
-        // $request->user()?->delete();
         $request->user()?->currentAccessToken()->delete();
-        return response()->json(['status' => true, 'message' => 'Logged out successfully']);
+        return $this->jsonSuccess('User logged out successfully',[], 200);
     }
 
-    public function user(Request $request)
-    {
-        return $request->user();
-    }
+    
 }

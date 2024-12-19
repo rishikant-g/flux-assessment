@@ -5,7 +5,6 @@ import { useSingUp } from "../common/services/useAuth";
 import { URLS } from "../common/constants/urls";
 import Loader from "../components/common/Loader";
 import { useEffect } from "react";
-import { useAuth } from "../provider/authProvider";
 import { useNavigate } from "react-router-dom";
 
 const Register = () => {
