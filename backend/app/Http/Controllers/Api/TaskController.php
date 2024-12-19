@@ -16,7 +16,22 @@ class TaskController extends ApiController
      */
     public function index(Request $request)
     {
-        $allTasks = Task::get();
+        // $allTasks = Task::get();
+        // return $allTasks->toArray();
+        $allTasks = Task::when(request('search', null), function($query) {
+            return $query->where('title', 'like', "%". request('search') . "%");
+        })
+        ->when(request('sort_by', null), function ($q) {
+            $sortBy = request('sort_by', null) ? 'desc' : 'asc';
+            return $q->orderBy('id', $sortBy);
+        })
+        ->withCount([
+            'items',
+            'items as checked_items' => function ($query) {
+                $query->where('is_completed', true);
+            }
+        ])
+        ->get();
         return $allTasks->toArray();
     }
 
@@ -100,6 +115,6 @@ class TaskController extends ApiController
             $query->where(['user_id' => $userId]);
         })
         ->get();
-        return $this->jsonSuccess('Success subtasks', $allItems->toArray());
+        return $this->jsonSuccess('Success subtasks', ['data' => $allItems->toArray()]);
     }
 }

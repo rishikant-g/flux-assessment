@@ -11,11 +11,13 @@ import ITaskResponse from "../common/type/model/ITaskResponse";
 interface State {
   selectedTaskList: ITaskListResponse;
   selectedTask: ITaskResponse;
+  isOpenSubTask:boolean;
 }
 
 const INITIAL_VALUES: State = {
   selectedTaskList: {},
   selectedTask: {},
+  isOpenSubTask:false,
 };
 
 type Action =

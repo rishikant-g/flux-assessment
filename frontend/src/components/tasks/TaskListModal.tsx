@@ -1,56 +1,52 @@
-// src/components/TaskModal.tsx
+// src/components/TaskListModal.tsx
 
 import React, { useEffect, useState } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
-import { usePostSubTaskList } from "../../common/services/useTask";
 import { URLS } from "../../common/constants/urls";
-import { useUpdateTaskList } from "../../common/services/useTaskList";
+import {
+  usePostTaskList,
+  useUpdateTaskList,
+} from "../../common/services/useTaskList";
 import { queryClient } from "../../common/services/queryClient";
-import { useTaskData } from "../../provider/taskProvider";
 
-// Define the props for the TaskModal
-interface TaskModalProps {
+// Define the props for the TaskListModal
+interface TaskListModalProps {
   show: boolean;
   onHide: () => void;
   title: string;
   isEdit?: boolean;
-  selectedTask?: any;
+  selectedTaskList?: any;
 }
 
-const TaskModal: React.FC<TaskModalProps> = ({
+const TaskListModal: React.FC<TaskListModalProps> = ({
   show,
   onHide,
   title,
   isEdit = false,
-  selectedTask,
+  selectedTaskList,
 }) => {
-  const { state } = useTaskData();
-
   const [taksTitle, setTaskTitle] = useState<string>(
-    selectedTask?.description || "",
+    selectedTaskList?.title || "",
   );
-  const { mutate, isSuccess } = usePostSubTaskList(URLS.SUB_TASK_CREATE);
+  const { mutate, isSuccess } = usePostTaskList(URLS.TASK_CREATE);
   const { mutate: mutateUpdate, isSuccess: isTaskUpdate } = useUpdateTaskList(
-    selectedTask
-      ? URLS.SUB_TASK_UPDATE + `${selectedTask?.id}`
-      : URLS.SUB_TASK_UPDATE,
+    selectedTaskList
+      ? URLS.TASK_UPDATE + `${selectedTaskList?.id}`
+      : URLS.TASK_UPDATE,
   );
 
   const handleCreateTask = () => {
     if (isEdit) {
-      mutateUpdate({
-        task_id: state?.selectedTaskList?.id,
-        description: taksTitle,
-      });
+      mutateUpdate({ title: taksTitle });
     } else {
-      mutate({ task_id: state?.selectedTaskList?.id, description: taksTitle });
+      mutate({ title: taksTitle });
     }
   };
 
   useEffect(() => {
     if (isSuccess || isTaskUpdate) {
       onHide();
-      queryClient.invalidateQueries({ queryKey: ["GET_TASK"] });
+      queryClient.invalidateQueries({ queryKey: ["GET_TASK_LIST"] });
     }
   }, [isSuccess, isTaskUpdate]);
 
@@ -86,4 +82,4 @@ const TaskModal: React.FC<TaskModalProps> = ({
   );
 };
 
-export default TaskModal;
+export default TaskListModal;

@@ -36,3 +36,41 @@ export const usePostTaskList = (
     ...options,
   });
 };
+
+export const useUpdateTaskList = (
+  url: string,
+  options?: MutationOpt<any, any>,
+) => {
+  const fn = (params: any) =>
+    request<any, any>({
+      url,
+      method: "PUT",
+      params,
+      useData: true,
+    });
+
+  return useMutation<any, any, any>({
+    mutationKey: ["POST_UPDATE_LIST"],
+    mutationFn: fn,
+    ...options,
+  });
+};
+
+export const useDeleteTaskList = (
+  url: string,
+  options?: MutationOpt<any, any>,
+) => {
+  const fn = (params: any) =>
+    request<any, any>({
+      url,
+      method: "DELETE",
+      params,
+      useData: true,
+    });
+
+  return useMutation<any, any, any>({
+    mutationKey: ["POST_TASK_LIST"],
+    mutationFn: fn,
+    ...options,
+  });
+};
