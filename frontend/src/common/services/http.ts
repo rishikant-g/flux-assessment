@@ -60,9 +60,10 @@ const handleGlobalError = (response: any, errorFrom: string) => {
 
     const errorObject = response.data;
     try {
-      if (errorObject && errorObject.message) {
-        Toast(`${errorObject.message}`, "error");
-      } else if (
+      // if (errorObject && errorObject.message) {
+      //   Toast(`${errorObject.message}`, "error");
+      // } else
+      if (
         errorObject &&
         typeof errorObject === "object" &&
         errorObject.errors

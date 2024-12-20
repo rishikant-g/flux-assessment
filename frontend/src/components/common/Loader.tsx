@@ -1,16 +1,23 @@
-import React, { memo } from "react";
+import React from "react";
+import { Spinner } from "react-bootstrap";
 
-type LoaderProps = {
-  className?: string;
-};
-
-const Loader: React.FC<LoaderProps> = ({ className = "" }) => {
+const Loader: React.FC = () => {
   return (
-    <div className={`loader-backdrop ${className}`}>
-      <div className="loader"></div>
+    <div
+      className="d-flex justify-content-center align-items-center"
+      style={{ height: "100vh", position : "absolute", top: '0', right: '0', bottom: '0', width: "100%", background: "white", zIndex: '9999' }}
+    >
+      <SmallLoader/>
     </div>
   );
 };
 
-Loader.displayName = "Loader";
-export default memo(Loader);
+export const SmallLoader = () => {
+  return <>
+      <Spinner animation="border" role="status">
+          <span className="visually-hidden">Loading...</span>
+      </Spinner>
+  </>
+}
+
+export default Loader;

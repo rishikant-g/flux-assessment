@@ -1,4 +1,4 @@
-import { Button, Card, Col, Form, Row } from "react-bootstrap";
+import { Button, Card, Form } from "react-bootstrap";
 import { URLS } from "../../common/constants/urls";
 import { useGetTask } from "../../common/services/useTask";
 import { useTaskData } from "../../provider/taskProvider";
@@ -11,6 +11,9 @@ import {
 import { queryClient } from "../../common/services/queryClient";
 import LoaderPortal from "../common/LoaderPortal";
 import { getUpdatedTaskData } from "../../common/utils/util";
+import { BsFillPencilFill, BsFillTrashFill } from "react-icons/bs";
+import { SmallLoader } from "../common/Loader";
+import { CgEnter } from "react-icons/cg";
 
 const Task: React.FC = () => {
   const { state, dispatch } = useTaskData();
@@ -108,7 +111,6 @@ const Task: React.FC = () => {
 
   return (
     <>
-      {(isLoading || isPending) && <LoaderPortal />}
       {showModal && (
         <TaskModal
           show={showModal}
@@ -120,57 +122,61 @@ const Task: React.FC = () => {
           selectedTask={selectedTask}
         />
       )}
+      <div className="d-flex justify-content-end align-items-center my-2">
+        <Button onClick={handleShow}>Add New Task</Button>
+      </div>
+      {(isLoading || isPending) && (
+        <div className="text-center my-4">
+          <SmallLoader />
+        </div>
+      )}
+      {data && data.length === 0 && (
+        <div className="text-center mt-5">No subtask added yet!</div>
+      )}
       {state.isOpenSubTask && (
         <>
-          <div className="task-div">
+          <div className="pt-2">
             {data?.data?.map((task: any) => (
-              <Row
-                xs={1}
-                sm={2}
-                md={3}
-                lg={4}
-                className="g-4 d-flex justify-content-start"
-              >
-                <Col key={task.id}>
-                  <Card>
-                    <Card.Body>
-                      <Form>
-                        <Form.Check
-                          type="checkbox"
-                          id="checkbox-1"
-                          checked={task.is_completed ? true : false}
-                          onChange={(e: any) =>
-                            handleCheckboxChange(e, task.id)
-                          }
-                        />
-                      </Form>
+              <>
+                <Card className="mb-3">
+                  <Card.Body className="d-flex justify-content-start align-items-baseline gap-4">
+                    <Form>
+                      <Form.Check
+                        type="checkbox"
+                        id={`check-${task.id}`}
+                        checked={task.is_completed ? true : false}
+                        onChange={(e: any) => handleCheckboxChange(e, task.id)}
+                      />
+                    </Form>
 
-                      <Card.Text
-                        onClick={() =>
-                          dispatch({
-                            type: "UPDATE_FIELDS",
-                            payload: {
-                              selectedTask: task,
-                            },
-                          })
-                        }
-                      >
-                        {task.description}
-                      </Card.Text>
-                      <p className="p-0" onClick={() => handleEdit(task)}>
-                        edit
-                      </p>
-                      <p className="p-0" onClick={() => handleDelete(task.id)}>
-                        Delete
-                      </p>
-                      <p></p>
-                    </Card.Body>
-                  </Card>
-                </Col>
-              </Row>
+                    <Card.Text
+                      className={
+                        task.is_completed ? "text-decoration-line-through" : ""
+                      }
+                      onClick={() =>
+                        dispatch({
+                          type: "UPDATE_FIELDS",
+                          payload: {
+                            selectedTask: task,
+                          },
+                        })
+                      }
+                    >
+                      {task.description}
+                    </Card.Text>
+                    <div className="ms-auto d-flex gap-3">
+                      <span className="p-0" style={{cursor: 'pointer'}} onClick={() => handleEdit(task)}>
+                        <BsFillPencilFill />
+                      </span>
+                      <span className="p-0" style={{cursor: 'pointer'}} onClick={() => handleDelete(task.id)}>
+                        <BsFillTrashFill />
+                      </span>
+                    </div>
+                  </Card.Body>
+                </Card>
+              </>
             ))}
           </div>
-          <Button onClick={handleShow}>Add New Task</Button>
         </>
       )}
     </>

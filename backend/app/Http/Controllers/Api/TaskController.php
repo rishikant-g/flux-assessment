@@ -22,7 +22,7 @@ class TaskController extends ApiController
             return $query->where('title', 'like', "%". request('search') . "%");
         })
         ->when(request('sort_by', null), function ($q) {
-            $sortBy = request('sort_by', null) ? 'desc' : 'asc';
+            $sortBy = request('sort_by', null) == 'asc' ? 'asc' : 'desc';
             return $q->orderBy('id', $sortBy);
         })
         ->withCount([

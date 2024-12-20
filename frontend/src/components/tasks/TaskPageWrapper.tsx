@@ -1,4 +1,4 @@
-import { Button, Col, Container, Form, Row } from "react-bootstrap";
+import { Button, Col, Form } from "react-bootstrap";
 import { useTaskData } from "../../provider/taskProvider";
 import TaskList from "./TaskList";
 import Task from "./Task";
@@ -6,6 +6,8 @@ import { useCallback, useEffect, useState } from "react";
 import { debounce } from "../../common/utils/util";
 import { useGetTaskList } from "../../common/services/useTaskList";
 import { URLS } from "../../common/constants/urls";
+import { BsSortAlphaDown, BsSortAlphaUp } from "react-icons/bs";
+import { SmallLoader } from "../common/Loader";
 
 const TaskPageWrapper: React.FC = () => {
   const { state, dispatch } = useTaskData();
@@ -15,6 +17,7 @@ const TaskPageWrapper: React.FC = () => {
   const {
     data,
     isLoading,
+    isFetching,
     isSuccess: isSuccessTaskList,
   } = useGetTaskList(URLS.TASK_LIST, searchQuery, sortBy);
 
@@ -42,41 +45,99 @@ const TaskPageWrapper: React.FC = () => {
   }, [isLoading, isSuccessTaskList, data]);
 
   return (
-    <Container>
-      <Row>
-        <Form>
-          <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-            <Form.Control
-              type="text"
-              onChange={(e) => handleSearch(e.target.value)}
-            />
-          </Form.Group>
-        </Form>
-        <Button
-          onClick={() => {
-            if (sortBy === "asc") {
-              setsortBy("desc");
-            } else {
-              setsortBy("asc");
-            }
-          }}
-        >
-          {sortBy === "asc" ? "DESC" : "ASC"}
-        </Button>
-        <Col>
-          <div className="task-list">
-            <TaskList />
+    // <Container className="mt-5">
+    //   <Row>
+    //     <Form>
+    //       <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+    //         <label>Search</label>
+    //         <Form.Control
+    //           type="text"
+    //           onChange={(e) => handleSearch(e.target.value)}
+    //         />
+    //       </Form.Group>
+    //     </Form>
+    //     <Button
+    //       onClick={() => {
+    //         if (sortBy === "asc") {
+    //           setsortBy("desc");
+    //         } else {
+    //           setsortBy("asc");
+    //         }
+    //       }}
+    //     >
+    //       {sortBy === "asc" ? "DESC" : "ASC"}
+    //     </Button>
+    //     <Col sm={12} md={6}>
+    //       <div className="task-list">
+    //         <TaskList />
+    //       </div>
+    //     </Col>
+    //     <Col sm={12} md={6}>
+    //       {state.isOpenSubTask && (
+    //         <div className="mt-5">
+    //           <Task />
+    //         </div>
+    //       )}
+    //     </Col>
+    //   </Row>
+    // </Container>
+    <>
+      <div className="container mt-5">
+        <div className="row">
+          <div className="col-sm-12 col-md-5 px-4">
+            <Form className="d-flex align-items-center justify-content-between gap-3">
+              <Form.Group
+                className="mb-3"
+                controlId="exampleForm.ControlInput1"
+              >
+                <Form.Label>Search</Form.Label>
+                <Form.Control
+                  type="text"
+                  onChange={(e) => handleSearch(e.target.value)}
+                />
+              </Form.Group>
+              <Button
+                className="d-inline-block"
+                onClick={() => {
+                  if (sortBy === "asc") {
+                    setsortBy("desc");
+                  } else {
+                    setsortBy("asc");
+                  }
+                }}
+              >
+                {sortBy === "asc" ? (
+                  <BsSortAlphaUp size={20} />
+                ) : (
+                  <BsSortAlphaDown size={20} />
+                )}
+              </Button>
+            </Form>
+            {isFetching && (<div className="text-center mt-5"><SmallLoader/></div>)}
           </div>
-        </Col>
-        <Col>
-          {state.isOpenSubTask && (
-            <div className="task-details">
-              <Task />
+
+          <div className="col-sm-12 col-md-7"></div>
+
+          <Col sm={12} md={6}>
+            <div className="task-list">
+
+              {data && !data.length && (
+                <Form.Label className="px-4"> No record found</Form.Label>
+              )}
+
+              <TaskList />
             </div>
-          )}
-        </Col>
-      </Row>
-    </Container>
+          </Col>
+          <Col sm={12} md={6}>
+            {state.isOpenSubTask && (
+              <div className="mt-5">
+                <Task />
+              </div>
+            )}
+          </Col>
+        </div>
+      </div>
+    </>
   );
 };
 
