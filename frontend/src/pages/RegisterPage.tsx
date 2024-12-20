@@ -3,9 +3,10 @@ import { Controller, FormProvider, useForm } from "react-hook-form";
 import { CONSTANTS } from "../common/constants/constants";
 import { useSingUp } from "../common/services/useAuth";
 import { URLS } from "../common/constants/urls";
-import Loader from "../components/common/Loader";
+import { SmallLoader } from "../components/common/Loader";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import Toast from "../components/common/Toast";
 
 const Register = () => {
   // const authCtx = useAuth();
@@ -34,22 +35,22 @@ const Register = () => {
   };
 
   useEffect(() => {
-    console.log("data", data, isSuccess);
-    if (data && isSuccess) navigate("/");
+    if (data && isSuccess) {
+      navigate("/");
+      Toast("Registation successfull, Login to continue!", "success");
+    }
   }, [isSuccess, navigate, data]);
-
-  // useEffect(() => {
-  //   if (authCtx.isLoggedIn) navigate("/task");
-  // }, [authCtx, navigate]);
 
   return (
     <>
-      {isPending && <Loader />}
       <div className="container">
-        <div className="row min-vh-100 ">
+        <div
+          className="row justify-content-center align-items-center"
+          style={{ minHeight: "85vh" }}
+        >
           <div className="col-md-12 ">
-            <h1 className="text-center">
-              <span>Log in to your</span> ToDo account.
+            <h1 className="text-center mb-5">
+              <span>Register </span> User
             </h1>
             <FormProvider {...methods}>
               <form onSubmit={handleSubmit(onSubmit)}>
@@ -186,7 +187,7 @@ const Register = () => {
                   <Col lg="6">
                     <div className="d-flex align-items-center justify-content-center gap-12 mb-30">
                       <Button variant="primary" type="submit">
-                        Sign Up
+                        {isPending ? <SmallLoader /> : " Sign Up"}
                       </Button>
                     </div>
                   </Col>

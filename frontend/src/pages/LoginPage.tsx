@@ -47,12 +47,11 @@ const Login = () => {
     <>
       {isPending && <Loader />}
       <div className="container">
-        <div className="row min-vh-100 ">
+        <div className="row justify-content-center align-items-center" style={{minHeight: '85vh'}}>
           <div className="col-md-12 ">
-
-            <h1 className="text-center">
-                <span>Log in to your</span> ToDo account.
-              </h1>
+            <h1 className="text-center mb-5">
+              <span>Log in to your</span> ToDo account.
+            </h1>
             <FormProvider {...methods}>
               <form onSubmit={handleSubmit(onSubmit)}>
                 <Row className="justify-content-md-center">

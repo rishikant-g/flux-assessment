@@ -128,7 +128,7 @@ const Task: React.FC = () => {
           <SmallLoader />
         </div>
       )}
-      {data && data.length === 0 && (
+      {data?.data.length == 0 && (
         <div className="text-center mt-5">No subtask added yet!</div>
       )}
       {state.isOpenSubTask && (
