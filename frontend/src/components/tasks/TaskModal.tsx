@@ -1,5 +1,3 @@
-// src/components/TaskModal.tsx
-
 import React, { useEffect, useState } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import { usePostSubTaskList } from "../../common/services/useTask";
@@ -9,7 +7,6 @@ import { queryClient } from "../../common/services/queryClient";
 import { useTaskData } from "../../provider/taskProvider";
 import { getUpdatedTaskData } from "../../common/utils/util";
 
-// Define the props for the TaskModal
 interface TaskModalProps {
   show: boolean;
   onHide: () => void;
@@ -74,7 +71,7 @@ const TaskModal: React.FC<TaskModalProps> = ({
   // Prevent form submission on enter key press
   const handleKeyDown = (event: React.KeyboardEvent) => {
     if (event.key === "Enter") {
-      event.preventDefault(); // Prevents form submission
+      event.preventDefault();
     }
   };
 

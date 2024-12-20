@@ -24,6 +24,7 @@ export const useGetTaskList = (
   return useQuery({
     queryKey: ["GET_TASK_LIST", searchString, sort_by],
     queryFn: fn,
+    retry: false,
   });
 };
 

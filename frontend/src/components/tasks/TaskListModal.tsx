@@ -1,5 +1,3 @@
-// src/components/TaskListModal.tsx
-
 import React, { useEffect, useState } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import { URLS } from "../../common/constants/urls";
@@ -9,7 +7,6 @@ import {
 } from "../../common/services/useTaskList";
 import { queryClient } from "../../common/services/queryClient";
 
-// Define the props for the TaskListModal
 interface TaskListModalProps {
   show: boolean;
   onHide: () => void;

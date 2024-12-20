@@ -45,42 +45,6 @@ const TaskPageWrapper: React.FC = () => {
   }, [isLoading, isSuccessTaskList, data]);
 
   return (
-    // <Container className="mt-5">
-    //   <Row>
-    //     <Form>
-    //       <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-    //         <label>Search</label>
-    //         <Form.Control
-    //           type="text"
-    //           onChange={(e) => handleSearch(e.target.value)}
-    //         />
-    //       </Form.Group>
-    //     </Form>
-    //     <Button
-    //       onClick={() => {
-    //         if (sortBy === "asc") {
-    //           setsortBy("desc");
-    //         } else {
-    //           setsortBy("asc");
-    //         }
-    //       }}
-    //     >
-    //       {sortBy === "asc" ? "DESC" : "ASC"}
-    //     </Button>
-    //     <Col sm={12} md={6}>
-    //       <div className="task-list">
-    //         <TaskList />
-    //       </div>
-    //     </Col>
-    //     <Col sm={12} md={6}>
-    //       {state.isOpenSubTask && (
-    //         <div className="mt-5">
-    //           <Task />
-    //         </div>
-    //       )}
-    //     </Col>
-    //   </Row>
-    // </Container>
     <>
       <div className="container mt-5">
         <div className="row">
@@ -113,14 +77,17 @@ const TaskPageWrapper: React.FC = () => {
                 )}
               </Button>
             </Form>
-            {isFetching && (<div className="text-center mt-5"><SmallLoader/></div>)}
+            {isFetching && (
+              <div className="text-center mt-5">
+                <SmallLoader />
+              </div>
+            )}
           </div>
 
           <div className="col-sm-12 col-md-7"></div>
 
           <Col sm={12} md={6}>
             <div className="task-list">
-
               {data && !data.length && (
                 <Form.Label className="px-4"> No record found</Form.Label>
               )}

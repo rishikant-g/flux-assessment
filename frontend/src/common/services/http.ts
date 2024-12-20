@@ -42,6 +42,12 @@ axiosInstance.interceptors.response.use(
     return response;
   },
   (error) => {
+    if (error.code === "ERR_NETWORK") {
+      Toast(
+        `Uh-oh we're having trouble connecting right now. Please check your internet connection and try again.`,
+        "error",
+      );
+    }
     const responseError = error.response;
     handleGlobalError(responseError, "responseError");
     return Promise.reject(error);

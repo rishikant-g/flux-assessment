@@ -89,46 +89,7 @@ const TaskList: React.FC = () => {
         />
       )}
 
-      {/* <div className="task-list"> */}
       <div>
-        {/* {state?.taskData?.map((task: ITaskListResponse) => (
-          <Row xs={12} lg={6}>
-            <Col
-              key={task.id}
-              style={{
-                backgroundColor:
-                  state?.selectedTaskList?.id === task.id ? "lightyellow" : "",
-              }}
-            >
-              <Card className="d-flex">
-                <Card.Body>
-                  <Card.Text
-                    onClick={() =>
-                      dispatch({
-                        type: "UPDATE_FIELDS",
-                        payload: {
-                          selectedTaskList: task,
-                          isOpenSubTask: true,
-                        },
-                      })
-                    }
-                  >
-                    {task.checked_items} / {task.items_count}
-                    <br />
-                    {task.title}
-                  </Card.Text>
-                  <p className="p-0" onClick={() => handleEdit(task)}>
-                    edit
-                  </p>
-                  <p className="p-0" onClick={() => handleDelete(task.id || 0)}>
-                    delete
-                  </p>
-                </Card.Body>
-              </Card>
-            </Col>
-          </Row>
-        ))} */}
-
         <div className="row">
           <div className="col-sm-10">
             {state?.taskData?.map((task: ITaskListResponse) => (
@@ -174,11 +135,16 @@ const TaskList: React.FC = () => {
                       )}
 
                       <div>
-                        <span className="m-1" style={{cursor: 'pointer'}} onClick={() => handleEdit(task)}>
+                        <span
+                          className="m-1"
+                          style={{ cursor: "pointer" }}
+                          onClick={() => handleEdit(task)}
+                        >
                           <BsFillPencilFill />
                         </span>
                         <span
-                          className="m-1" style={{cursor: 'pointer'}}
+                          className="m-1"
+                          style={{ cursor: "pointer" }}
                           onClick={() => handleDelete(task.id || 0)}
                         >
                           <BsFillTrashFill />
@@ -186,29 +152,6 @@ const TaskList: React.FC = () => {
                       </div>
                     </div>
                   </div>
-                  {/* <Card.Text
-                      onClick={() =>
-                        dispatch({
-                          type: "UPDATE_FIELDS",
-                          payload: {
-                            selectedTaskList: task,
-                            isOpenSubTask: true,
-                          },
-                        })
-                      }
-                    >
-                      {task.checked_items} / {task.items_count}
-                      <br />
-                      {task.title}
-                    </Card.Text>
-                    <div className="d-flex gap-4">
-                      <p className="p-0" onClick={() => handleEdit(task)}>
-                        <BsFillPencilFill/>
-                      </p>
-                      <p className="p-0" onClick={() => handleDelete(task.id || 0)}>
-                        <BsFillTrashFill/>
-                      </p>
-                    </div> */}
                 </Card.Body>
               </Card>
             ))}

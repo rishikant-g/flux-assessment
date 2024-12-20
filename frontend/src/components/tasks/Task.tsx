@@ -9,11 +9,9 @@ import {
   useUpdateTaskList,
 } from "../../common/services/useTaskList";
 import { queryClient } from "../../common/services/queryClient";
-import LoaderPortal from "../common/LoaderPortal";
 import { getUpdatedTaskData } from "../../common/utils/util";
 import { BsFillPencilFill, BsFillTrashFill } from "react-icons/bs";
 import { SmallLoader } from "../common/Loader";
-import { CgEnter } from "react-icons/cg";
 
 const Task: React.FC = () => {
   const { state, dispatch } = useTaskData();
